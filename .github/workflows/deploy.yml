@@ -12,6 +12,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check secrets
+        run: |
+          echo "Checking secrets..."
+          [ -n "${{ secrets.SERVER_HOST }}" ] || (echo "SERVER_HOST is not set" && exit 1)
+          [ -n "${{ secrets.SERVER_USER }}" ] || (echo "SERVER_USER is not set" && exit 1)
+          [ -n "${{ secrets.SERVER_SSH }}" ] || (echo "SERVER_SSH is not set" && exit 1)
+          [ -n "${{ secrets.DEPLOY_PORT }}" ] || (echo "DEPLOY_PORT is not set" && exit 1)
+          [ -n "${{ secrets.DEPLOY_PATH }}" ] || (echo "DEPLOY_PATH is not set" && exit 1)
+          echo "All required secrets are set."
+
       - name: Deploy to server over SSH
         uses: appleboy/ssh-action@v0.1.6
         with:
