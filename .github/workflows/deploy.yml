@@ -21,6 +21,21 @@ jobs:
           [ -n "${{ secrets.DEPLOY_PORT }}" ] || (echo "DEPLOY_PORT is not set" && exit 1)
           [ -n "${{ secrets.DEPLOY_PATH }}" ] || (echo "DEPLOY_PATH is not set" && exit 1)
           echo "All required secrets are set."
+          echo "Lengths:"
+          echo "SERVER_HOST: ${#{{ secrets.SERVER_HOST }}}"
+          echo "SERVER_USER: ${#{{ secrets.SERVER_USER }}}"
+          echo "SERVER_SSH: ${#{{ secrets.SERVER_SSH }}}"
+          echo "DEPLOY_PORT: ${#{{ secrets.DEPLOY_PORT }}}"
+          echo "DEPLOY_PATH: ${#{{ secrets.DEPLOY_PATH }}}"
+          echo "SERVER_PASSPHRASE: ${#{{ secrets.SERVER_PASSPHRASE }}}"
+
+      - name: Debug SSH key
+        run: |
+          echo "${{ secrets.SERVER_SSH }}" > temp_key
+          chmod 600 temp_key
+          echo "SSH key info:"
+          ssh-keygen -lf temp_key
+          rm temp_key
 
       - name: Deploy to server over SSH
         uses: appleboy/ssh-action@v0.1.6
