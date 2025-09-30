@@ -22,7 +22,7 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           script: |
             set -e
-            echo "Deploy started on $(hostname)"
+            echo "Deploy started on  $(hostname)"
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
             if [ -z "$DEPLOY_PATH" ]; then
               echo "ERROR: DEPLOY_PATH secret is not set" >&2
