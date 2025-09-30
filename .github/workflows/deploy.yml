@@ -15,19 +15,25 @@ jobs:
       - name: Check secrets
         run: |
           echo "Checking secrets..."
-          [ -n "${{ secrets.SERVER_HOST }}" ] || (echo "SERVER_HOST is not set" && exit 1)
-          [ -n "${{ secrets.SERVER_USER }}" ] || (echo "SERVER_USER is not set" && exit 1)
-          [ -n "${{ secrets.SERVER_SSH }}" ] || (echo "SERVER_SSH is not set" && exit 1)
-          [ -n "${{ secrets.DEPLOY_PORT }}" ] || (echo "DEPLOY_PORT is not set" && exit 1)
-          [ -n "${{ secrets.DEPLOY_PATH }}" ] || (echo "DEPLOY_PATH is not set" && exit 1)
+          host="${{ secrets.SERVER_HOST }}"
+          user="${{ secrets.SERVER_USER }}"
+          ssh_key="${{ secrets.SERVER_SSH }}"
+          port="${{ secrets.DEPLOY_PORT }}"
+          path="${{ secrets.DEPLOY_PATH }}"
+          passphrase="${{ secrets.SERVER_PASSPHRASE }}"
+          [ -n "$host" ] || (echo "SERVER_HOST is not set" && exit 1)
+          [ -n "$user" ] || (echo "SERVER_USER is not set" && exit 1)
+          [ -n "$ssh_key" ] || (echo "SERVER_SSH is not set" && exit 1)
+          [ -n "$port" ] || (echo "DEPLOY_PORT is not set" && exit 1)
+          [ -n "$path" ] || (echo "DEPLOY_PATH is not set" && exit 1)
           echo "All required secrets are set."
           echo "Lengths:"
-          echo "SERVER_HOST: ${#{{ secrets.SERVER_HOST }}}"
-          echo "SERVER_USER: ${#{{ secrets.SERVER_USER }}}"
-          echo "SERVER_SSH: ${#{{ secrets.SERVER_SSH }}}"
-          echo "DEPLOY_PORT: ${#{{ secrets.DEPLOY_PORT }}}"
-          echo "DEPLOY_PATH: ${#{{ secrets.DEPLOY_PATH }}}"
-          echo "SERVER_PASSPHRASE: ${#{{ secrets.SERVER_PASSPHRASE }}}"
+          echo "SERVER_HOST: ${#host}"
+          echo "SERVER_USER: ${#user}"
+          echo "SERVER_SSH: ${#ssh_key}"
+          echo "DEPLOY_PORT: ${#port}"
+          echo "DEPLOY_PATH: ${#path}"
+          echo "SERVER_PASSPHRASE: ${#passphrase}"
 
       - name: Debug SSH key
         run: |
