@@ -48,6 +48,12 @@ jobs:
           ssh-keygen -lf temp_key
           rm temp_key
 
+      - name: Test SSH connection
+        run: |
+          echo "${{ secrets.SERVER_SSH }}" > temp_key
+          chmod 600 temp_key
+          ssh -o StrictHostKeyChecking=no -i temp_key -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'echo "SSH direct test OK"'
+
       - name: Deploy to server over SSH
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -56,6 +62,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH }}
           passphrase: ${{ secrets.SERVER_PASSPHRASE }}
           port: ${{ secrets.DEPLOY_PORT }}
+          debug: true
           script: |
             set -e
             echo "Deploy started on  $(hostname)"
