@@ -48,24 +48,13 @@ jobs:
           ssh-keygen -lf temp_key
           rm temp_key
 
-      - name: Test SSH connection
-        run: |
-          echo "${{ secrets.SERVER_SSH }}" > temp_key
-          chmod 600 temp_key
-          ssh -o StrictHostKeyChecking=no -i temp_key -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'echo "SSH direct test OK"'
-
       - name: Deploy to server over SSH
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH }}
-          passphrase: ${{ secrets.SERVER_PASSPHRASE }}
-          port: ${{ secrets.DEPLOY_PORT }}
-          debug: true
-          script: |
+        run: |
+          echo "${{ secrets.SERVER_SSH }}" > deploy_key
+          chmod 600 deploy_key
+          ssh -o StrictHostKeyChecking=no -i deploy_key -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             set -e
-            echo "Deploy started on  $(hostname)"
+            echo "Deploy started on $(hostname)"
             DEPLOY_PATH="${{ secrets.DEPLOY_PATH }}"
             if [ -z "$DEPLOY_PATH" ]; then
               echo "ERROR: DEPLOY_PATH secret is not set" >&2
@@ -89,3 +78,5 @@ jobs:
             fi
 
             echo "Deploy finished"
+          EOF
+          rm deploy_key
